@@ -4,16 +4,16 @@
 \alias{mvtb.ri}
 \title{Computes the relative influence of each predictor for each outcome.}
 \usage{
-mvtb.ri(out, n.trees = NULL, weighted = F, relative = "col")
+mvtb.ri(object, n.trees = NULL, weighted = F, relative = "col")
 }
 \arguments{
-\item{out}{mvtb output object}
+\item{object}{mvtb output object}
 
 \item{n.trees}{number of trees to use}
 
-\item{weighted}{T/F. Reductions in SSE are weighted according the covariance explained by each predictor.}
+\item{weighted}{T/F. Reductions in SSE are weighted according the covariance explained by each predictor. See \code{?mvtb} for details.}
 
-\item{relative}{If 'col', each column sums to 100. If 'tot', the whole matrix sums to 100 (a percent). If 'n', the raw reductions in SSE are returned.}
+\item{relative}{If 'col', each column sums to 100. If 'tot', the whole matrix sums to 100 (a percent). Otherwise, the raw reductions in SSE are returned.}
 }
 \value{
 Matrix of (relative) influences.
@@ -21,5 +21,11 @@ Matrix of (relative) influences.
 \description{
 The relative influence of a predictor is the reduction in sums of squares attributable to splits on individual predictors.
 It is often expressed as a percent (sums to 100).
+}
+\details{
+(Relative) influences are the usual reductions in SSE due to splitting on each predictor.
+'Weighted' influences are the raw influences weighted by the covariance explained in all pairs of outcomes by that predictor.
+This allows predictor selection to be informed by the covariance explained.
+Different weighting types are possible, see \code{?mvtb}.
 }
 

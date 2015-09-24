@@ -19,7 +19,7 @@
 ## res[[1]]
 
 #' Detect departures from linearity from a multivariate tree boosting model.
-#' @param out object of class \code{mvtb}
+#' @param object object of class \code{mvtb}
 #' @param X matrix of predictors
 #' @param Y matrix of responses
 #' @param n.trees number of trees. Defaults to the minimum number of trees given that minimize CV, test, training error.
@@ -33,9 +33,9 @@
 #' Several methods are provided for detecting departures from non-linearity in pairs from pairs of predictors. 
 #' The "grid" method computes a grid of the model implied predictions as a function of two predictors, averaging over the others. A linear model predicting the observed outcomes from the predicted values is fit, and the mean squared residuals (times 1000) are reported. Large residuals indicate deviations from linearity.
 #' 
-#' The "influence" method computes the reductions of SSE attributable to predictors after the first split on the tree. These reductions in sums of squared error (or influnences) indicate to what extent individual predictors capture deviations from linear, main effects.
+#' The "influence" method computes the reductions of SSE attributable to predictors after the first split on the tree. These reductions in sums of squared error (or influences) indicate to what extent individual predictors capture deviations from linear, main effects.
 #' 
-#' The "lm" method is the same as the "grid" method, but produces the grid of predicted values by conditioning on the average values of the other predictors rather than averaging over the values of the other predictors (see Elith et al., 2008) . Like the "grid" approach, large residuals from a linear model (times 1000) indiciate departures from linearity. 
+#' The "lm" method is the same as the "grid" method, but produces the grid of predicted values by conditioning on the average values of the other predictors rather than averaging over the values of the other predictors (see Elith et al., 2008) . Like the "grid" approach, large residuals from a linear model (times 1000) indicate departures from linearity. 
 #'
 #' These methods are not necessarily overlapping, and can produce different results. We suggest using several approaches, and follow up by plotting the model implied effects of the two predictors.
 #' The gbm package contains the function interact.gbm to detect interactions. See ?interact.gbm for details of this function, which can be used directly on individual mvtb output models.
@@ -47,23 +47,23 @@
 #' 
 #' Friedman, J. H., & Meulman, J. J. (2003). Multiple additive regression trees with application in epidemiology. Statistics in medicine, 22(9), 1365-1381.
 #' @export
-mvtb.nonlin <-function(out, X, Y, n.trees=NULL,detect="grid",scale=TRUE) {
+mvtb.nonlin <-function(object, X, Y, n.trees=NULL,detect="grid",scale=TRUE) {
   #
   # p. miller, February 2015. Updated for multiple outcome variables
   # j. leathwick, j. elith - May 2007
-  
+  out <- object
   if(any(unlist(lapply(out,function(li){is.raw(li)})))){
-    out <- uncomp.mvtb(out)
+    out <- mvtb.uncomp(out)
   }
   if(is.null(n.trees)) { n.trees <- min(unlist(out$best.trees)) }
   data <- X
   n.preds <- ncol(data)
-  if(!is.null(names(data))) { 
-    pred.names <- names(data)
+  if(!is.null(colnames(data))) { 
+    pred.names <- colnames(data)
   } else {
     pred.names <- out$models[[1]]$var.names
   }
-  if(!is.null(names(Y))){
+  if(!is.null(colnames(Y))){
     col.names <- colnames(Y)
   } else {
     col.names <- out$ynames
@@ -188,7 +188,7 @@ intx.lm <- function (out,n.trees,which.y,data,n.preds,pred.names) {
         }
       }        
       ## form the prediction
-      prediction <- predict.mvtb(out,newdata=data.frame(pred.frame),n.trees = n.trees)[,which.y,]
+      prediction <- predict.mvtb(out,newdata=data.frame(pred.frame),n.trees = n.trees,drop=FALSE)[,which.y,]
       interaction.test.model <- lm(prediction ~ as.factor(pred.frame[,1]) + as.factor(pred.frame[,2]))             
       interaction.flag <- round(mean(resid(interaction.test.model)^2)*1000,2)
       cross.tab[i,j] <- interaction.flag
@@ -212,9 +212,10 @@ intx.lm <- function (out,n.trees,which.y,data,n.preds,pred.names) {
 ##   reduction in sums of squared errors attributable to splitting on variables in the row
 ##   AFTER the first split on the variable in the column. 
 
-intx.influence <- function(mvtb.obj,k=1,n.trees,scale=TRUE) {
+intx.influence <- function(object,k=1,n.trees,scale=TRUE) {
   #do.one <- function(k,mvtb.obj,scale) {
   #gbm.object <- convert.mvtb.gbm(mvtb.obj,k)
+  mvtb.obj <- object
   gbm.object <- mvtb.obj$models[[k]]
   trees <- gbm.object$trees
   pred.names <- gbm.object$var.names

@@ -4,16 +4,16 @@
 \alias{mvtb.perspec}
 \title{Perspective plot for 2 predictors and 1 response.}
 \usage{
-mvtb.perspec(out, response.no = 1, predictor.no = 1:2, n.trees = NULL,
-  phi = 15, theta = -55, r = sqrt(10), d = 3, ticktype = "detailed",
-  ...)
+mvtb.perspec(object, response.no = 1, predictor.no = 1:2, n.trees = NULL,
+  phi = 15, theta = -55, r = sqrt(10), d = 3, xlab = NULL,
+  ylab = NULL, zlab = NULL, ticktype = "detailed", ...)
 }
 \arguments{
-\item{out}{mvtb output object}
+\item{object}{mvtb output object}
 
 \item{response.no}{index of the response variable}
 
-\item{predictor.no}{vector containing indeces of the predictor variables to plot}
+\item{predictor.no}{vector containing indices of the predictor variables to plot}
 
 \item{n.trees}{desired number of trees (default: best trees)}
 
@@ -25,12 +25,18 @@ mvtb.perspec(out, response.no = 1, predictor.no = 1:2, n.trees = NULL,
 
 \item{d}{strength of perspective. See ?persp.}
 
+\item{xlab,}{title for x axis, must be character strings.}
+
+\item{ylab,}{title for y axis, must be character strings.}
+
+\item{zlab,}{title for z axis, must be character strings.}
+
 \item{ticktype}{'detailed' gives axis points. See ?persp for other options.}
 
 \item{...}{extra arguments are passed to persp. See ?persp}
 }
 \value{
-Function is called for it's side effect, a plot.
+Function returns a plot.
 }
 \description{
 This is a plot of the model implied function of 2 predictors averaged over the other predictors
@@ -39,6 +45,6 @@ As an alternative to the perspective (3D) plot, a 2D heat plot can be obtained d
 using ?plot.gbm.
 }
 \seealso{
-\code{plot.gbm}, \code{plot.mvtb}, \code{heat.covex}
+\code{plot.gbm}, \code{plot.mvtb}, \code{mvtb.heat}
 }
 

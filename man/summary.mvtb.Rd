@@ -4,7 +4,8 @@
 \alias{summary.mvtb}
 \title{Computes a summary of the multivariate tree boosting model}
 \usage{
-\method{summary}{mvtb}(object, print = TRUE, n.trees = NULL, ...)
+\method{summary}{mvtb}(object, print = TRUE, n.trees = NULL,
+  relative = "col", covex = TRUE, ...)
 }
 \arguments{
 \item{object}{mvtb output object}
@@ -12,6 +13,10 @@
 \item{print}{result (default is TRUE)}
 
 \item{n.trees}{number of trees used to compute relative influence. Defaults to the minimum number of trees by CV, test, or training error}
+
+\item{relative}{relative If 'col', each column sums to 100. If 'tot', the whole matrix sums to 100 (a percent). If 'n', the raw reductions in SSE are returned.}
+
+\item{covex}{Whether to print covariance explained}
 
 \item{...}{unused}
 }
@@ -22,6 +27,6 @@ Returns the best number of trees, the univariate relative influence of each pred
 Computes a summary of the multivariate tree boosting model
 }
 \seealso{
-\code{mvtb.ri}, \code{gbm.ri}, \code{cluster.covex}
+\code{mvtb.ri}, \code{gbm.ri}, \code{mvtb.cluster}
 }
 

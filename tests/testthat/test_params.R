@@ -86,13 +86,13 @@ expect_true(!identical(r1,r3))
 context("compress")
 r <- mvtb(X=X,Y=Y,n.trees=5,alpha=.5, trainfrac=.5,samp.iter=FALSE,cov.discrep=1,weight.type=2,bag.frac=.5,s=1:500,seednum=8,compress=FALSE,cv.folds=3,save.cv=TRUE)
 r1 <- mvtb(X=X,Y=Y,n.trees=5,alpha=.5, trainfrac=.5,samp.iter=FALSE,cov.discrep=1,weight.type=2,bag.frac=.5,s=1:500,seednum=8,compress=TRUE,cv.folds=3,save.cv=TRUE)
-r2 <- uncomp.mvtb(r1)
+r2 <- mvtb.uncomp(r1)
 r$params$compress <- TRUE # set to TRUE so that the comparison is legitimate
 expect_equal(r,r2)
 
 r <- mvtb(X=X,Y=Y,n.trees=5,alpha=.5, cv.folds=1,samp.iter=FALSE,cov.discrep=1,weight.type=2,bag.frac=.5,s=1:500,seednum=8,compress=FALSE)
 r1 <- mvtb(X=X,Y=Y,n.trees=5,alpha=.5, cv.folds=1,samp.iter=FALSE,cov.discrep=1,weight.type=2,bag.frac=.5,s=1:500,seednum=8,compress=TRUE)
-r2 <- uncomp.mvtb(r1)
+r2 <- mvtb.uncomp(r1)
 r$params$compress <- TRUE
 expect_equal(r,r2)
 
@@ -134,3 +134,39 @@ expect_true(all(unlist(lapply(r3$finaltree[[1]],function(t){length(t[[1]])})) ==
 #r1 <- mvtb(X=X,Y=Y,n.trees=100,alpha=.5, cv.folds=1,samp.iter=FALSE,cov.discrep=1,weight.type=2,bag.frac=.5,s=1:500,seednum=8,compress=FALSE,save.cv=TRUE)
 #r <- mvtb(X=X,Y=Y,n.trees=100,alpha=.5, cv.folds=1,samp.iter=FALSE,cov.discrep=1,weight.type=2,bag.frac=.5,s=1:500,seednum=8,compress=TRUE)
 #r1 <- mvtb(X=X,Y=Y,n.trees=100,alpha=.5, cv.folds=1,samp.iter=FALSE,cov.discrep=1,weight.type=2,bag.frac=.5,s=1:500,seednum=8,compress=TRUE,save.cv=TRUE)
+
+# test data frame
+context("test inputs for X and Y")
+Xf <- as.data.frame(X)
+Yf <- as.data.frame(Y)
+out <- try(mvtb(Y=Yf,X=Xf))
+expect_is(out,"mvtb")
+
+# test single predictor case
+set.seed(123)
+n <- 1000
+B <- matrix(0,nrow=1,ncol=4)
+B[1,1:2] <- 1
+X <- matrix(rbinom(n,size=1,prob=.5),n,nrow(B))
+E <- matrix(rnorm(n*4),nrow=n,ncol=4)
+Y <- X %*% B + E
+out <- try(mvtb(Y=Y,X=X))
+expect_is(out,"mvtb")
+out <- try(mvtb(Y=Y,X=as.data.frame(X)))
+expect_is(out,"mvtb")
+
+
+# test single outcome, single predictor
+set.seed(123)
+n <- 1000
+B <- matrix(0,nrow=1,ncol=1)
+B[1,1] <- 1
+X <- matrix(rbinom(n,size=1,prob=.5),n,nrow(B))
+E <- matrix(rnorm(n*nrow(B)),nrow=n,ncol=nrow(B))
+Y <- X %*% B + E
+out <- try(mvtb(Y=Y,X=X))
+expect_is(out,"mvtb")
+
+# test vectors
+out <- try(mvtb(Y=Y[,,drop=TRUE],X=X[,,drop=TRUE]))
+expect_is(out,"mvtb")

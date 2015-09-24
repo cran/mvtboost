@@ -4,14 +4,14 @@
 \alias{gbm.ri}
 \title{Computes the relative influence of each predictor for each outcome from gbm.}
 \usage{
-gbm.ri(out, n.trees = NULL, relative = "col", ...)
+gbm.ri(object, n.trees = NULL, relative = "col", ...)
 }
 \arguments{
-\item{out}{mvtb output object}
+\item{object}{mvtb output object}
 
 \item{n.trees}{number of trees to use}
 
-\item{relative}{If 'col', each column sums to 100. If 'tot', the whole matrix sums to 100 (a percent). If 'n', the raw reductions in SSE are returned.}
+\item{relative}{How to scale the multivariate influences. If 'col', each column sums to 100. If 'tot', the whole matrix sums to 100 (a percent). If 'n', the raw reductions in SSE are returned.}
 
 \item{...}{Additional arguments passed to \code{gbm::relative.influence}}
 }

@@ -9,8 +9,6 @@
 \packageDescription{mvtboost}
 }
 \details{
-
-The DESCRIPTION file:
 \packageDESCRIPTION{mvtboost}
 \packageIndices{mvtboost}
 The most important function is \code{mvtb}, which fits the multivariate tree boosting model. See \code{?mvtb} for details.
@@ -28,8 +26,16 @@ Miller P.J., Lubke G.H, McArtor D.B., Bergeman C.S. (2015) Finding structure in 
 \code{gbm}
 }
 \examples{
-data(trees)
-X <- as.matrix(trees[,1:2])
-Y <- as.matrix(trees[,3])
-mvtb(X=X,Y=Y,n.trees=30)
+data(wellbeing)
+Y <- wellbeing[,21:26]
+X <- wellbeing[,1:20]
+Ys <- scale(Y)
+cont.id <- unlist(lapply(X,is.numeric))
+Xs <- scale(X[,cont.id])
+res <- mvtb(Y=Ys,X=Xs)
+summary(res)
+plot(res,predictor.no = 11)
+predict(res,newdata=Xs)
+mvtb.cluster(res)
+mvtb.heat(t(mvtb.ri(res)))
 }

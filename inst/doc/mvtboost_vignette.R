@@ -28,7 +28,7 @@ summary(out)
 summary(out2)
 
 ## ------------------------------------------------------------------------
-yhat <- drop(predict(out2,newdata=X))
+yhat <- predict(out2,newdata=X)
 (r2 <- var(yhat)/var(Ys))
 
 ## ----fig.width=8,fig.height=3.5------------------------------------------
@@ -49,7 +49,7 @@ nonlin.out$cty$rank.list
 round(out2$covex,2)
 
 ## ----fig.width=8---------------------------------------------------------
-cc <- cluster.covex(out2, clust.method = "ward.D", dist.method = "manhattan")
+cc <- mvtb.cluster(out2, clust.method = "ward.D", dist.method = "manhattan")
 round(cc,2)
-heat.covex(out2)
+mvtb.heat(out2$covex)
 

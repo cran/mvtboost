@@ -1,11 +1,16 @@
 [![Build Status](https://travis-ci.org/patr1ckm/mvtboost.svg?branch=master)](https://travis-ci.org/patr1ckm/mvtboost)
 [![codecov.io](https://codecov.io/github/patr1ckm/mvtboost/coverage.svg?branch=master)](https://codecov.io/github/patr1ckm/mvtboost?branch=master)
-<!-- [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/mvtboost)](http://cran.r-project.org/package=mvtboost) -->
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/mvtboost)](http://cran.r-project.org/package=mvtboost)
 
 # mvtboost
 Tree boosting for multivariate outcomes in R, built on gbm. Estimates a multivariate additive model of decision trees by iteratively selecting predictors that explain covariance in the outcomes. 
 
-This package can be installed directly from github using the devtools package:
+This package can be installed directly from CRAN:
+
+    install.packages("mvtboost")
+    library(mvtboost)
+
+The most recent version can be installed directly from github using the devtools package:
 
     devtools::install_github("patr1ckm/mvtboost")
 
@@ -25,7 +30,7 @@ This package can be installed directly from github using the devtools package:
 
     summary(out)                   # best trees, relative influences, and covex
     mvtb.ri(out)                   # relative influences
-    cluster.covex(out)             # clustered covariance explained in outcomes by predictors
+    mvtb.cluster(out)              # clustered covariance explained in outcomes by predictors
     
     yhat <- predict(out,newdata=X) # predictions
     
@@ -33,7 +38,7 @@ This package can be installed directly from github using the devtools package:
     plot(out,response.no=1,predictor.no=2)
     plot(out,response.no=2,predictor.no=2)
     
-    heat.covex(out)                # heat map of the clustered covariance explained matrix
+    mvtb.heat(out$covex)                 # heat map of the clustered covariance explained matrix
     
     mvtb.nonlin(out,X=X,Y=Y)       # indicators of predictors with nonlinear effects
 
