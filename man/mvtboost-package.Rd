@@ -9,9 +9,7 @@
 \packageDescription{mvtboost}
 }
 \details{
-\packageDESCRIPTION{mvtboost}
-\packageIndices{mvtboost}
-The most important function is \code{mvtb}, which fits the multivariate tree boosting model. See \code{?mvtb} for details.
+The most important function is \code{mvtb}, which fits the multivariate tree boosting model. See \code{?mvtb} for details. The fitted model objects have \code{summary}, \code{print}, \code{plot} and \code{predict} methods. Additionally, \code{mvtb.ri} to computes the relative influence of each predictor, and \code{mvtb.covex} computes an estimate of the covariance explained in pairs of outcomes by predictors. These tables can be displayed as heatmaps using \code{mvtb.heat}. Examples for fitting, tuning and interpreting the models are available in the help pages and two package vignettes.
 }
 \author{
 \packageAuthor{mvtboost}
@@ -34,8 +32,8 @@ cont.id <- unlist(lapply(X,is.numeric))
 Xs <- scale(X[,cont.id])
 res <- mvtb(Y=Ys,X=Xs)
 summary(res)
-plot(res,predictor.no = 11)
+plot(res,predictor.no = 8)
 predict(res,newdata=Xs)
 mvtb.cluster(res)
-mvtb.heat(t(mvtb.ri(res)))
+mvtb.heat(t(mvtb.ri(res)),cexRow=.8,cexCol=1,dec=0)
 }

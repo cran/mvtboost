@@ -17,11 +17,20 @@ res <- mvtb(Y=Ys,X=Xs)
 
 ## ----echo=FALSE, eval=FALSE----------------------------------------------
 #  # tuning the model
-#  system.time(res5 <- mvtb(Y=Ys,X=Xs,n.trees=10000,shrinkage=.005,cv.folds=5,compress=FALSE))
-#  save(res5,file="wb_cv5.Rdata")
+#  res5 <- mvtb(Y=Ys,X=Xs,n.trees=10000,shrinkage=.005,cv.folds=5,compress=FALSE)
+#  res5train <- mvtb(Y=Ys,X=Xs,n.trees=10000,shrinkage=.005,cv.folds=5,compress=FALSE,s=trainset)
+#  save(res5,file="vignettes/wb_cv5.Rdata")
+#  save(res5train,file="vignettes/wb_cv5test.Rdata")
 
 ## ----eval=FALSE----------------------------------------------------------
 #  res5 <- mvtb(Y=Ys,X=Xs,n.trees=10000,shrinkage=.005,cv.folds=5,compress=FALSE)
+
+## ------------------------------------------------------------------------
+set.seed(104)
+trainset <- sample(1:nrow(Ys),size = 784,replace=FALSE)
+
+## ----eval=FALSE----------------------------------------------------------
+#  res5train <- mvtb(Y=Ys,X=Xs,n.trees=10000,shrinkage=.005,cv.folds=5,compress=FALSE,s=trainset)
 
 ## ----eval=FALSE----------------------------------------------------------
 #  res5$best.trees
@@ -29,8 +38,8 @@ res <- mvtb(Y=Ys,X=Xs)
 
 ## ----echo=FALSE----------------------------------------------------------
 load("wb_cv5.Rdata")
+load("wb_cv5test.Rdata")
 res5$best.trees
-
 
 ## ----echo=FALSE,fig.height=7,fig.width=7---------------------------------
 plot(x=1:10000,y=res5$trainerr,type="l",ylab="Error",xlab="Number of trees")
@@ -49,11 +58,13 @@ par(mar=c(8,10,1,1))
 mvtb.heat(t(mvtb.ri(res5)),clust.method = NULL,cexRow=1,cexCol=1,numformat=numformat)
 
 ## ------------------------------------------------------------------------
-yhat <- predict(res5,newdata=Xs)
-diag(var(yhat)/var(Ys))
+testset <- (1:nrow(Ys))[!(1:nrow(Ys) %in% trainset)]
+yhat <- predict(res5train,newdata=Xs[testset,])
+diag(var(yhat)/var(Ys[testset,]))
 
 ## ----fig.height=5,fig.width=10-------------------------------------------
 par(mar=c(8,15,1,1),mfrow=c(1,1))
+numformat <- function(val){sub("^(-?)0.", "\\1.", sprintf("%.2f", val))}
 mvtb.heat(res5$covex[,-c(1:7)],cexRow=.9,numformat=numformat,clust.method = NULL)
 
 
