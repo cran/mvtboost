@@ -26,8 +26,8 @@ out2 <- mvtb(Y=Ys,X=X,
 out2$best.trees
 
 ## ------------------------------------------------------------------------
-summary(out)
-summary(out2)
+summary(out,covex=TRUE)
+summary(out2,covex=TRUE)
 
 ## ------------------------------------------------------------------------
 yhat <- predict(out2,newdata=X)

@@ -28,7 +28,7 @@
 #' @return For each outcome, a list is produced showing the interactions in two forms. The first is \code{$rank.list}, which shows the nonlinear effect for each pair of predictors ranked according to the size of the departure from non-linearity. 
 #' The second, \code{$interactions}, shows the departure from non-linearity for all pairs of predictors.
 #' @details This function provides a statistic to detect departures from linearity in the multivariate boosting model for any outcome as a function of pairs of predictors. 
-#' These depatures could be interactions between pairs of variables, or more general non-linear effects. Please note that these methods should be interpreted as exploratory only.
+#' These departures could be interactions between pairs of variables, or more general non-linear effects. Please note that these methods should be interpreted as exploratory only.
 #' 
 #' Several methods are provided for detecting departures from non-linearity from pairs of predictors. 
 #' The \code{"grid"} method computes a grid of the model implied predictions as a function of two predictors, averaging over the others. A linear model predicting the observed outcomes from the predicted values is fit, and the mean squared residuals (times 1000) are reported. Large residuals indicate deviations from linearity.
@@ -243,7 +243,7 @@ intx.influence <- function(object,k=1,n.trees,scale=TRUE) {
 }
 
 ## GBM Tree structure
-## [[1]] - INDEX: vector of indeces of splitting variables. -1 indicates a terminal node. starts from 0.
+## [[1]] - INDEX: vector of indices of splitting variables. -1 indicates a terminal node. starts from 0.
 ## [[2]] - prediction: split point, or c.split describing the split
 ## [[3]] - Node assignments (left). 
 ## [[4]] - Node assignments (right). 

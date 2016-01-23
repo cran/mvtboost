@@ -34,7 +34,7 @@ trainset <- sample(1:nrow(Ys),size = 784,replace=FALSE)
 
 ## ----eval=FALSE----------------------------------------------------------
 #  res5$best.trees
-#  summary(res5,covex=FALSE)
+#  summary(res5)
 
 ## ----echo=FALSE----------------------------------------------------------
 load("wb_cv5.Rdata")
@@ -48,7 +48,7 @@ lines(x=1:10000,y=res5$cv.err,type="l",col="red")
 legend("topright",legend=c("Training Error","Cross-Validation Error"),lty=c(1,1),col=c("black","red"),bty="n")
 
 ## ----eval=FALSE----------------------------------------------------------
-#  summary(res5,covex=FALSE)
+#  summary(res5)
 #  round(mvtb.ri(res5,relative = "tot"),2)
 
 ## ----fig.height=5,fig.width=10-------------------------------------------
