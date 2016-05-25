@@ -16,11 +16,31 @@ Y <- Xf %*% B + E
 
 # Right now, just makes sure the plots run with default arguments and no errors.
 out <- mvtb(Y=Y,X=X,n.trees=100,shrinkage = .5)
-plot(out)
-mvtb.perspec(out)
-mvtb.heat(out)
-mvtb.heat(out$covex)
-mvtb.heat(t(mvtb.ri(out)),cexRow=2,cexCol=.5)
-mvtb.heat(t(mvtb.ri(out)),clust.method=NULL)
+x <- rnorm(1000)
+y <- x*5 + rnorm(1000)
+o1 <- mvtb(Y=y, X=x)
 
-expect_equal(dim(plot(out,return.grid=T)),c(100,2))
+
+test_that("mvtb.plot", {
+  plot(out)
+  plot(o1)
+})
+
+test_that("mvtb.perspec", {
+  mvtb.perspec(out)
+  expect_error(mvtb.perspec(o1,1,1))
+})
+
+test_that("mvtb.heat", {
+  mvtb.heat(mvtb.covex(out, Y=Y,X=X))
+  mvtb.heat(mvtb.covex(out, Y=Y,X=X),clust.method = "complete")
+  mvtb.heat(mvtb.covex(o1, Y=y, X=x))
+  mvtb.heat(t(mvtb.ri(out)))
+  mvtb.heat(t(mvtb.ri(out)),clust.method=NULL)
+  col <- colorRampPaletteAlpha(RColorBrewer::brewer.pal(9,"Greys"),100)
+  mvtb.heat(mvtb.covex(o1, Y=y, X=x),col=col)
+})
+
+test_that("return.grid", {
+  expect_equal(dim(plot(out,return.grid=T)),c(100,2))
+})

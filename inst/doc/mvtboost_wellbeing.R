@@ -17,20 +17,21 @@ res <- mvtb(Y=Ys,X=Xs)
 
 ## ----echo=FALSE, eval=FALSE----------------------------------------------
 #  # tuning the model
-#  res5 <- mvtb(Y=Ys,X=Xs,n.trees=10000,shrinkage=.005,cv.folds=5,compress=FALSE)
-#  res5train <- mvtb(Y=Ys,X=Xs,n.trees=10000,shrinkage=.005,cv.folds=5,compress=FALSE,s=trainset)
+#  
+#  res5 <- mvtb(Y=Ys,X=Xs,n.trees=1000,shrinkage=.05,cv.folds=5,compress=FALSE)
+#  res5train <- mvtb(Y=Ys,X=Xs,n.trees=1000,shrinkage=.05,cv.folds=5,compress=FALSE,s=trainset)
 #  save(res5,file="vignettes/wb_cv5.Rdata")
 #  save(res5train,file="vignettes/wb_cv5test.Rdata")
 
 ## ----eval=FALSE----------------------------------------------------------
-#  res5 <- mvtb(Y=Ys,X=Xs,n.trees=10000,shrinkage=.005,cv.folds=5,compress=FALSE)
+#  res5 <- mvtb(Y=Ys,X=Xs,n.trees=1000,shrinkage=.05,cv.folds=5,compress=FALSE)
 
 ## ------------------------------------------------------------------------
 set.seed(104)
 trainset <- sample(1:nrow(Ys),size = 784,replace=FALSE)
 
 ## ----eval=FALSE----------------------------------------------------------
-#  res5train <- mvtb(Y=Ys,X=Xs,n.trees=10000,shrinkage=.005,cv.folds=5,compress=FALSE,s=trainset)
+#  res5train <- mvtb(Y=Ys,X=Xs,n.trees=1000,shrinkage=.05,cv.folds=5,compress=FALSE,s=trainset)
 
 ## ----eval=FALSE----------------------------------------------------------
 #  res5$best.trees
@@ -42,9 +43,9 @@ load("wb_cv5test.Rdata")
 res5$best.trees
 
 ## ----echo=FALSE,fig.height=7,fig.width=7---------------------------------
-plot(x=1:10000,y=res5$trainerr,type="l",ylab="Error",xlab="Number of trees")
+plot(x=1:1000,y=res5$trainerr,type="l",ylab="Error",xlab="Number of trees")
 abline(v=res5$best.trees$best.cv)
-lines(x=1:10000,y=res5$cv.err,type="l",col="red")
+lines(x=1:1000,y=res5$cv.err,type="l",col="red")
 legend("topright",legend=c("Training Error","Cross-Validation Error"),lty=c(1,1),col=c("black","red"),bty="n")
 
 ## ----eval=FALSE----------------------------------------------------------
@@ -65,15 +66,16 @@ diag(var(yhat)/var(Ys[testset,]))
 ## ----fig.height=5,fig.width=10-------------------------------------------
 par(mar=c(8,15,1,1),mfrow=c(1,1))
 numformat <- function(val){sub("^(-?)0.", "\\1.", sprintf("%.2f", val))}
-mvtb.heat(res5$covex[,-c(1:7)],cexRow=.9,numformat=numformat,clust.method = NULL)
+covex <- mvtb.covex(res5, Y=Ys, X=Xs)
+mvtb.heat(covex[,-c(1:7)],cexRow=.9,numformat=numformat,clust.method = NULL)
 
 
 ## ----eval=FALSE----------------------------------------------------------
-#  mvtb.cluster(res5)
+#  mvtb.cluster(covex)
 
 ## ----fig.height=5,fig.width=10-------------------------------------------
 par(mar=c(8,12,1,1),mfrow=c(1,1))
-mvtb.heat(res5$covex[,-c(1:7)],cexRow=.9)
+mvtb.heat(covex[,-c(1:7)],cexRow=.9)
 
 ## ----fig.height=5,fig.width=12-------------------------------------------
 par(mfcol=c(1,2),mar=c(5,5,4,1))

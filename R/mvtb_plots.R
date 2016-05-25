@@ -74,6 +74,7 @@ mvtb.perspec <- function(object,response.no=1,predictor.no=1:2,n.trees=NULL,
   if(any(unlist(lapply(object,function(li){is.raw(li)})))){
     object <- mvtb.uncomp(object)
   }
+  if(length(object$var.names) == 1) stop("Need more than one predictor for perspective plot") 
   if(is.null(n.trees)) { n.trees <- min(unlist(object$best.trees)) }
   gbm.obj <- object$models[[response.no]]
   grid <- gbm::plot.gbm(gbm.obj,i.var = predictor.no,n.trees = n.trees,perspective=TRUE,return.grid=TRUE)
@@ -118,7 +119,7 @@ plot.pw.perspec <- function(out,response.no,predictor.no,npairs=3,nonlin.rank=NU
 #' 
 #' Simple (clustered) heatmap of tables from \code{mvtb} (relative influence, covariance explained)
 #' 
-#' @param x Any table. For example: the covariance explained (\code{res$covex}), or relative influence \code{mvtb.ri(res)}. If \code{x} is an \code{mvtb} object, defaults to \code{mvtb.covex(x)}
+#' @param x Any table. For example: the covariance explained from \code{mvtb.covex}, or relative influence \code{mvtb.ri(res)}. 
 #' @param clust.method clustering method for rows and columns. This should be (an unambiguous abbreviation of) one of \code{"ward.D"}, \code{"ward.D2"}, \code{"single"}, \code{"complete"}, \code{"average"} (= UPGMA), \code{"mcquitty"} (= WPGMA), \code{"median"} (= WPGMC) or \code{"centroid"} (= UPGMC). If \code{NULL}, unclustered.
 #' @param dist.method  method for computing the distance between two lower triangular covariance matrices. This must be one of \code{"euclidean"}, \code{"maximum"}, \code{"manhattan"}, \code{"canberra"}, \code{"binary"} or \code{"minkowski"}. Any unambiguous substring can be given.
 #' @param numformat function to format the covex values into strings. Defaults to removing leading 0 and rounding to \code{dec = 2} decimal places.
@@ -126,19 +127,39 @@ plot.pw.perspec <- function(out,response.no,predictor.no,npairs=3,nonlin.rank=NU
 #' @param col A list of colors mapping onto covex explained values. A white to black gradient is default.
 #' @param cexRow, See \code{cex.axis} from par. The magnification used for the row axis labels. A useful default is provided.
 #' @param cexCol, See \code{cex.axis} from par. The magnification used for the col axis labels. The default is set equal to the row axis labels.
-#' @param ... extra arguments are passed to image, then to plot. See ?image, ?par
+#' @param ... extra arguments are passed to image, then to plot. See \code{?image}, \code{?par}
 #' @return heatmap of \code{x}, usually a covariance explained matrix or a matrix of (relative) influences.
-#' @details You will probably want to modify the default colors.
+#' @details The row and column names of \code{x} are used for the labels. See the examples for modifying the default colors.
 #' @export 
+#' @examples 
+#' data(wellbeing)
+#' Y <- wellbeing[,21:26]
+#' X <- wellbeing[,1:20]
+#' Ys <- scale(Y)
+#' cont.id <- unlist(lapply(X,is.numeric))
+#' Xs <- scale(X[,cont.id])
+#' 
+#' res <- mvtb(Y=Ys,X=Xs)
+#' 
+#' covex <- mvtb.covex(res, Y=Ys, X=Xs)
+#' par(mar=c(4,7,1,1))
+#' mvtb.heat(covex,cexRow=.8)
+#' 
+#' col <- colorRampPaletteAlpha(RColorBrewer::brewer.pal(9,"Greys"),100)
+#' mvtb.heat(covex, Y=Ys, X=Xs, col=col, cexRow=.8)
+#' 
+#' par(mar=c(5,5,1,1))
+#' mvtb.heat(t(mvtb.ri(res)),cexRow=.8,cexCol=1,dec=0)
 #' @seealso \code{plot.mvtb}, \code{mvtb.perspec}
 #' @importFrom graphics image axis text
 mvtb.heat <- function(x,clust.method="ward.D",dist.method="manhattan",dec=2,numformat=NULL,col=NULL,cexRow=NULL,cexCol=NULL,...) {
-  if(class(x) %in% "mvtb"){
-    if(any(unlist(lapply(x,function(li){is.raw(li)})))){
-      x <- mvtb.uncomp(x)
-    }
-    x <- x$covex
-  }
+  #if(class(x) %in% "mvtb"){
+  #  if(any(unlist(lapply(x,function(li){is.raw(li)})))){
+  #    x <- mvtb.uncomp(x)
+  #  }
+  #  x <- x$covex
+  #}
+  if(is.null(dim(x))){ x <- as.matrix(x)}
   if(!is.null(clust.method)){
     x <- mvtb.cluster(x,clust.method=clust.method,dist.method=dist.method)
   }
@@ -156,7 +177,7 @@ mvtb.heat <- function(x,clust.method="ward.D",dist.method="manhattan",dec=2,numf
           c(0, nr),ylab="",xlab="",axes=F,col=col)
   #axis(1,at=seq(0,1,length=nrow(x)))
   #cexRow <- .2+1/log10(max(nc,nr))
-  if(is.null(cexRow)) { cexRow <- log10(max(nc,nr)) }
+  if(is.null(cexRow)) { cexRow <- log10(max(nc,nr, 10)) }
   if(is.null(cexCol)) { cexCol <- cexRow}
   axis(1, 1:nc, labels = rep("",nc), las = 2, line = -0.5, tick = 0, 
        cex.axis = cexRow)

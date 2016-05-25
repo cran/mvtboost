@@ -18,16 +18,16 @@ out2 <- mvtb(Y=Ys,X=X,
             shrinkage=.01,
             interaction.depth=3,
             
-            bag.frac=.5,          # fit each tree to a sub sample of this fraction
-            trainfrac=.5,         # only fit the model to this fraction of the data set
+            bag.fraction=.5,      # fit each tree to a sub sample of this fraction
+            train.fraction=.5,    # only fit the model to this fraction of the data set
             cv.folds=3,           # number of cross-validation folds
             mc.cores=1,           # run the cross-validation in parallel
             seednum=103)          # set the seed number for reproducibility
 out2$best.trees
 
 ## ------------------------------------------------------------------------
-summary(out,covex=TRUE)
-summary(out2,covex=TRUE)
+summary(out)
+summary(out2)
 
 ## ------------------------------------------------------------------------
 yhat <- predict(out2,newdata=X)
@@ -48,10 +48,11 @@ nonlin.out$cty$rank.list
 
 
 ## ------------------------------------------------------------------------
-round(out2$covex,2)
+covex <- mvtb.covex(out2, Y=Ys, X=X)
+round(covex,2)
 
 ## ----fig.width=8---------------------------------------------------------
-cc <- mvtb.cluster(out2, clust.method = "ward.D", dist.method = "manhattan")
+cc <- mvtb.cluster(covex, clust.method = "ward.D", dist.method = "manhattan")
 round(cc,2)
-mvtb.heat(out2$covex)
+mvtb.heat(covex)
 

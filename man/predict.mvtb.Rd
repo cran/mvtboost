@@ -15,7 +15,7 @@
 
 \item{drop}{\code{TRUE/FALSE} Drop any dimensions of length 1}
 
-\item{...}{unused}
+\item{...}{not used}
 }
 \value{
 Returns an (array, matrix, vector) of predictions for all outcomes. The third dimension corresponds to the 

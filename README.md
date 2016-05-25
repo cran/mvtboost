@@ -17,8 +17,9 @@ The most recent version can be installed directly from github using the devtools
 ## Example usage
 
     data("mpg",package="ggplot2")
-    Y <- mpg[,c("cty","hwy")]      # use both city and highway mileage as dvs
-    X <- mpg[,-c(2,8:9)]           # manufacturer, displacement, year, cylinder, transmission, drive, class
+    Y <- mpg[,c("cty","hwy")]      
+    X <- mpg[,c("manufacturer", "displacement", "year", 
+              "cylinder", "transmission", "drive"", "class")]
 
     out <- mvtb(Y=Y,X=X,           # data
             n.trees=1000,          # number of trees
@@ -30,17 +31,18 @@ The most recent version can be installed directly from github using the devtools
 
     summary(out)                   # best trees, relative influences, and covex
     mvtb.ri(out)                   # relative influences
-    mvtb.cluster(out)              # clustered covariance explained in outcomes by predictors
     
     yhat <- predict(out,newdata=X) # predictions
     
-    par(mfcol=c(1,2))              # model implied effects for predictor 2 for cty and hwy
-    plot(out,response.no=1,predictor.no=2)
-    plot(out,response.no=2,predictor.no=2)
+    par(mfcol=c(1,2))              # model implied effects of displacement for cty and hwy
+    plot(out,1,predictor.no=2)
+    plot(out,2,predictor.no=2)
     
-    mvtb.heat(out$covex)                 # heat map of the clustered covariance explained matrix
+    covex <- mvtb.covex(out)       # compute covariance explained in outcomes by predictors
+    mvtb.heat(covex)               # heat map of the clustered covariance explained matrix
+    mvtb.cluster(covex)            # clustered covariance explained 
     
-    mvtb.nonlin(out,X=X,Y=Y)       # indicators of predictors with nonlinear effects
+    mvtb.nonlin(out,Y=Y,X=X)       # indicators of predictors with nonlinear effects
 
 ## Tune the model
 
@@ -49,7 +51,13 @@ The most recent version can be installed directly from github using the devtools
             shrinkage=.01,
             interaction.depth=3,
             
-            bag.frac=.5,          # fit each tree to a sub sample of this fraction
-            trainfrac=.5,         # only fit the model to this fraction of the data set
+            bag.fraction=.5,      # fit each tree to a sub sample of this fraction
+            train.fraction=.5,    # only fit the model to this fraction of the data set
             cv.folds=3,           # number of cross-validation folds
             mc.cores=3)           # run the cross-validation in parallel (not tested on windows)
+
+
+### Vignettes
+
+    vignette("mvtboost_vignette")
+    vignette("mvtboost_wellbeing")
